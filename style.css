@@ -18,12 +18,14 @@ body {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    margin: 20px;
+    max-height: calc(100% - 80px); /* 4 * margin */
 }
 
 .chat-box {
     flex-grow: 1;
     overflow-y: auto;
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
     padding-right: 10px;
 }
 

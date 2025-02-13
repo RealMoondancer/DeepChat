@@ -3,6 +3,7 @@ const API_URL = "/request";
 // Function to add a new message to the chat box
 function addMessage(message, isUser = true) {
     const chatBox = document.getElementById("chat-box");
+    chatBox.style.marginBottom = "20px"; // Activate marginBottom only after first message (looks shit otherwise)
     const messageDiv = document.createElement("div");
     messageDiv.classList.add(isUser ? "user-message" : "bot-message");
     messageDiv.innerHTML = `<p id="messageText">${message}</p>`;
