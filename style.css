@@ -30,6 +30,7 @@ body {
 .user-message,
 .bot-message {
     margin-bottom: 15px;
+    white-space: pre-wrap;
 }
 
 .user-message p,
