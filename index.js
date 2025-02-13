@@ -1,5 +1,3 @@
-const socket = new io();
-
 const API_URL = "/request";
 
 // Function to add a new message to the chat box
@@ -43,7 +41,6 @@ async function handleMessageSubmission() {
         }
     }
 }
-socket.on('hello', () => {console.log("Got Hello")})
 
 // Add event listener for the send button
 document.getElementById("send-btn").addEventListener("click", handleMessageSubmission);

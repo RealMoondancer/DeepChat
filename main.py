@@ -2,7 +2,6 @@ import os
 
 import requests
 from flask import Flask, Response, request
-from flask_socketio import SocketIO
 import json
 
 target = {
@@ -15,8 +14,6 @@ target = {
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = 'asdf123'
-
-socketio = SocketIO(app)
 
 
 def root_dir():  # pragma: no cover
@@ -84,9 +81,5 @@ def stream_req(url, data):
                 print(f"Failed to parse {chunk}")
                 print(e)
 
-@socketio.on('connect')
-def connect():
-    print("Client connected")
-    socketio.emit('hello', {'data': 'Hello'})
 
-socketio.run(app, debug=True, allow_unsafe_werkzeug=True, port=8443)
+app.run(host='0.0.0.0', port=8443)
