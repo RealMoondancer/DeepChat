@@ -33,7 +33,7 @@ async function handleMessageSubmission() {
     while (true) {
         const { done, value } = await reader.read();
         
-        message.innerHTML += new TextDecoder().decode(value); // TODO replace \n with <br>
+        message.textContent += new TextDecoder().decode(value);
         //body.innerHTML = marked.parse(output);
 
         if (done) {
