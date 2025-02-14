@@ -3,7 +3,7 @@ const API_URL = "/request";
 // Function to add a new message to the chat box
 function addMessage(message, isUser = true) {
     const chatBox = document.getElementById("chat-box");
-    chatBox.style.marginBottom = "20px"; // Activate marginBottom only after first message (looks shit otherwise)
+    //chatBox.style.marginBottom = "20px"; // Activate marginBottom only after first message (looks shit otherwise)
     const messageDiv = document.createElement("div");
     messageDiv.classList.add(isUser ? "user-message" : "bot-message");
     messageDiv.innerHTML = `<p id="messageText">${message}</p>`;
@@ -19,6 +19,7 @@ async function handleMessageSubmission() {
     if (userInput.trim() === "") return;
 
     addMessage(userInput.trim());
+    document.getElementById("user-input").value = '';
 
     const response = await fetch("/request", {
         method: "POST",
@@ -36,6 +37,9 @@ async function handleMessageSubmission() {
         
         message.textContent += new TextDecoder().decode(value);
         //body.innerHTML = marked.parse(output);
+
+        var objDiv = document.getElementById("chat-box");
+        objDiv.scrollTop = objDiv.scrollHeight;
 
         if (done) {
             return;
