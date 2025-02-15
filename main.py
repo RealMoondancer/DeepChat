@@ -90,7 +90,8 @@ def get_resource(path):  # pragma: no cover
     msgs_str = """<script>
     var messages = {"""
     for msg in msgs:
-        msgs_str += f'"{msg[1].replace("\r\n", "\\r\\n")}": "{msg[3]}",' # 1: content 3: isUser?
+        # msgs_str += f'"{msg[1].replace("\r\n", "\\r\\n")}": "{msg[3]}",' # 1: content 3: isUser?
+        msgs_str += '"{0}": "{1}",'.format(msg[1].replace("\r\n", "\\r\\n"), msg[3]) # Why can't Python 3.11 use this s**t
     
     msgs_str = msgs_str[:-1] # Remove last comma
     msgs_str += """};
@@ -122,9 +123,9 @@ def stream_req(url, data):
             # Parse json
             try:
                 data = json.loads(chunk)
-                print(data)
+                #print(data)
                 if data['done'] == True:
-                    return f"<<~{data['done_reason']}~>>"
+                    yield f"<<~{data['done_reason']}~>>"
                 yield data['response']
             except Exception as e:
                 print(f"Failed to parse {chunk}")
