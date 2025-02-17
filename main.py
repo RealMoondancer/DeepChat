@@ -1,7 +1,7 @@
 import os
 
 import requests
-from flask import Flask, Response, request, g
+from flask import Flask, Response, request, g, render_template, Blueprint
 import sqlite3
 import json
 from uuid import uuid4
@@ -10,16 +10,20 @@ from uuid import uuid4
 DATABASE = 'db.sqlite3'
 
 TARGET = {
-    "ip": "10.56.60.171",
-    #"ip": "localhost",
+    #"ip": "10.56.60.171",
+    "ip": "localhost",
     "port": 11434,
     "api": "/api/generate"
 }
 
-app = Flask(__name__)
+TEMPLATE_FOLDER = os.path.abspath('./frontend/templates')
+STATIC_FOLDER = os.path.abspath('./frontend/static')
+
+app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = 'asdf123'
 
+chat_bp = Blueprint('chat', __name__, url_prefix='/chat')
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -50,15 +54,12 @@ def get_file(filename):  # pragma: no cover
     except IOError as exc:
         return str(exc)
 
+@chat_bp.route('/')
+def chat_index():
+    return render_template('index.html')
 
-@app.route('/', methods=['GET'])
-def metrics():  # pragma: no cover
-    content = get_file('index.html')
-    return Response(content, mimetype="text/html")
-
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
+#@app.route('/', defaults={'path': ''})
+#@app.route('/<path:path>')
 def get_resource(path):  # pragma: no cover
     mimetypes = {
         ".css": "text/css",
@@ -132,4 +133,6 @@ def stream_req(url, data):
                 print(e)
 
 
-app.run(host='0.0.0.0', port=8443)
+
+app.register_blueprint(chat_bp)
+app.run(host='0.0.0.0', port=8443, debug=True)

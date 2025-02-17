@@ -2,5 +2,6 @@
 + Add CSS -> Nvm. Just had to fix the <link> 
 - Chat saving
 - Style <think> </think>
-- Probably refactor most of the code
+# Probably refactor most of the code
 - Make Moritz fix the f*in CSS to not overflow the page again
+- Pass model selection to request

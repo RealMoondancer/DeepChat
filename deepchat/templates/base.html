@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div class="main">
+        <div class="menu">
+            <div class="user-menu">
+                {{ user_menu }}
+                
+            </div>
+            <div class="chat-selection">
+                {{ chat_selection }}
+                
+            </div>
+        </div>
+        <div class="chat-container">
+            <div class="chat-box" id="chat-box">
+                {{ chat_box }}
+            </div>
+            <div class="input-area">
+                <div class="input-container">
+                    <input type="text" id="user-input" placeholder="Type your message..." />
+                    <select id="modelSelect">
+                        {% for model in models %}
+                            <option value="{{ model[0] }}" {% if model[1] %}selected{% endif %}>{{ model[0] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+<!--<<~>>-->
+</body>
+</html>
