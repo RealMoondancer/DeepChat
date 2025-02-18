@@ -18,3 +18,15 @@ def index():
     print(ollama.get_models())
 
     return render_template('base.html', title='DeepChat', models=ollama.get_models())
+
+@bp.route('/request', methods=('POST',))
+def do_prompt():
+    data = request.get_json()
+    try:
+        model = data['model']
+        prompt = data['prompt']
+    except KeyError:
+        return {"error": "Invalid request"}, 400
+    db = get_db()
+    response = ollama.generate_response(model, prompt, current_app.app_context())
+    return response

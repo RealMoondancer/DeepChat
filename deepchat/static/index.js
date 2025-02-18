@@ -1,5 +1,3 @@
-const API_URL = "/request";
-
 // Function to add a new message to the chat box
 function addMessage(message, isUser = true) {
     const chatBox = document.getElementById("chat-box");
@@ -16,6 +14,7 @@ function addMessage(message, isUser = true) {
 // Function to handle the message submission
 async function handleMessageSubmission() {
     const userInput = document.getElementById("user-input").value;
+    const model = document.getElementById("modelSelect").value;
     if (userInput.trim() === "") return;
 
     addMessage(userInput.trim());
@@ -24,7 +23,7 @@ async function handleMessageSubmission() {
     const response = await fetch("/request", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({prompt: userInput.trim()})
+        body: JSON.stringify({prompt: userInput.trim(), model: model})
     });
 
     const reader = response.body.getReader();
