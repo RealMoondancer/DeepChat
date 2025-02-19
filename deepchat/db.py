@@ -44,3 +44,11 @@ sqlite3.register_converter(
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+
+def get_messages(chat_id):
+    cur = get_db().cursor()
+    
+    sql = f"SELECT message, fromUser FROM messages WHERE chatId = ?"
+    cur.execute(sql, chat_id)
+    messages = cur.fetchall()
+    return get_messages
