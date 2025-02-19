@@ -3,5 +3,6 @@
 - Chat saving
 - Style <think> </think>
 # Probably refactor most of the code
+   - Add typing
 - Make Moritz fix the f*in CSS to not overflow the page again
-- Pass model selection to request
++ Pass model selection to request
