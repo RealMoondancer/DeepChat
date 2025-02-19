@@ -1,8 +1,9 @@
 import requests
 from flask import current_app
 import json
+from collections.abc import Generator
 
-def build_target(api):
+def build_target(api) -> str:
     with current_app.app_context():
         uri = "http://"
         uri += current_app.config['TARGET_IP']
@@ -12,7 +13,7 @@ def build_target(api):
         uri += api
     return uri
 
-def get_models():
+def get_models() -> tuple[str, bool]:
     response = requests.get(build_target("api/tags"), stream=False)
     models = []
     json = response.json()['models']
@@ -21,7 +22,7 @@ def get_models():
     models.sort()
     return models
 
-def generate_response(model, prompt, appctx, stream=True):
+def generate_response(model, prompt, appctx, stream=True) -> Generator[str, None, None] | str:
     session = requests.Session()
     data = {"model": model, "prompt": prompt, "stream": stream}
     print("Starting generation with data: " + str(data))
@@ -35,4 +36,4 @@ def generate_response(model, prompt, appctx, stream=True):
                     yield f"<<~{data['done_reason']}~>>"
                 yield data['response']
         else:
-            yield request.json()['response']
+            return request.json()['response']

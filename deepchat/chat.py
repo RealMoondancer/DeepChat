@@ -1,3 +1,4 @@
+from collections.abc import Generator
 import functools
 
 from flask import (
@@ -12,7 +13,7 @@ from . import ollama
 bp = Blueprint('chat', __name__)
 
 @bp.route('/')
-def index():
+def index() -> str:
     db = get_db()
     
     print(ollama.get_models())
@@ -20,7 +21,7 @@ def index():
     return render_template('base.html', title='DeepChat', models=ollama.get_models())
 
 @bp.route('/request', methods=('POST',))
-def do_prompt():
+def do_prompt() -> Generator[str, None, None] | str:
     data = request.get_json()
     try:
         model = data['model']
