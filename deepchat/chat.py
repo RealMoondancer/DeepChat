@@ -41,4 +41,5 @@ def do_prompt() -> Generator[str, None, None] | str:
     except KeyError:
         return {"error": "Invalid request"}, 400
     response = ollama.generate_response(model, prompt, current_app.app_context())
-    return response
+    
+    return response, {"Content-Type": "text/plain"}

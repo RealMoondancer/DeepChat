@@ -22,18 +22,16 @@ def get_models() -> tuple[str, bool]:
     models.sort()
     return models
 
-def generate_response(model, prompt, appctx, stream=True) -> Generator[str, None, None] | str:
+def generate_response(model, prompt, appctx) -> Generator[str, None, None]:
     session = requests.Session()
-    data = {"model": model, "prompt": prompt, "stream": stream}
+    data = {"model": model, "prompt": prompt}
     print("Starting generation with data: " + str(data))
     with appctx:
         url = build_target("api/generate")
-    with session.post(url, stream=stream, json=data) as request:
-        if stream:
-            for chunk in request.iter_lines():
-                data = json.loads(chunk)
-                if data['done'] == True:
-                    yield f"<<~{data['done_reason']}~>>"
-                yield data['response']
-        else:
-            return request.json()['response']
+    with session.post(url, json=data, stream=True) as request:
+        for chunk in request.iter_lines():
+            data = json.loads(chunk)
+            print(data)
+            if data['done'] == True:
+                yield f"<<~{data['done_reason']}~>>"
+            yield data['response']

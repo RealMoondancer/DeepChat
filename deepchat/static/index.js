@@ -4,7 +4,7 @@ function addMessage(message, isUser = true) {
     //chatBox.style.marginBottom = "20px"; // Activate marginBottom only after first message (looks shit otherwise)
     const messageDiv = document.createElement("div");
     messageDiv.classList.add(isUser ? "user-message" : "bot-message");
-    messageDiv.innerHTML = `<p>${message}</p>`;
+    messageDiv.innerHTML = `<p id="messageText">${message}</p>`;
     chatBox.appendChild(messageDiv);
     chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the latest message
 
