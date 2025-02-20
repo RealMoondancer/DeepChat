@@ -35,11 +35,13 @@ def chat(chat_id: str) -> str:
 @bp.route('/request', methods=('POST',))
 def do_prompt() -> Generator[str, None, None] | str:
     data = request.get_json()
+    print(f"Got prompt request with data {data}")
     try:
         model = data['model']
         prompt = data['prompt']
+        history = data['history']
     except KeyError:
         return {"error": "Invalid request"}, 400
-    response = ollama.generate_response(model, prompt, current_app.app_context())
+    response = ollama.generate_response(model, prompt, history, current_app.app_context())
     
     return response, {"Content-Type": "text/plain"}

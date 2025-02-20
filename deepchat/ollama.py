@@ -22,16 +22,27 @@ def get_models() -> tuple[str, bool]:
     models.sort()
     return models
 
-def generate_response(model, prompt, appctx) -> Generator[str, None, None]:
+def prepare_messages(prompt: str, history: list[str, bool]) -> str:
+    msgs = []
+    for message, isUser in history:
+        msgs.append({"content": message, "role": "user" if isUser else "assistant"})
+    msgs.append({"content": prompt, "role": "user"})
+    return msgs
+
+def generate_response(model, prompt, history, appctx) -> Generator[str, None, None]:
     session = requests.Session()
-    data = {"model": model, "prompt": prompt}
+    data = {"model": model, "messages": prepare_messages(prompt, history)}
     print("Starting generation with data: " + str(data))
     with appctx:
-        url = build_target("api/generate")
+        url = build_target("api/chat")
     with session.post(url, json=data, stream=True) as request:
         for chunk in request.iter_lines():
             data = json.loads(chunk)
             print(data)
-            if data['done'] == True:
+            if (data.get('error') != None):
+                yield f"Error: {data['error']}"
+            elif data['done'] == True:
                 yield f"<<~{data['done_reason']}~>>"
-            yield data['response']
+            else:
+            #    yield data['response']
+                yield data.get('message').get('content')
