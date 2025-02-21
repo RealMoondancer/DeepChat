@@ -47,8 +47,10 @@ def init_app(app) -> None:
 
 def get_messages(chat_id) -> tuple[str, bool]:
     cur = get_db().cursor()
-    
     sql = f"SELECT message, fromUser FROM messages WHERE chatId = ?"
     cur.execute(sql, (chat_id,))
     messages = cur.fetchall()
     return messages
+
+async def putMessageInDB(msg):
+    print(msg)

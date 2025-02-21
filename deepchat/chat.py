@@ -6,16 +6,19 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from uuid import uuid4
+
 from markupsafe import Markup
 
 from .utility import template
 from . import ollama
-from .db import get_messages
+from .db import get_messages, putMessageInDB
 
 bp = Blueprint('chat', __name__)
 
 @bp.route('/')
 def index() -> str:
+    return redirect(f"/{uuid4()}", code=302)
     return template(current_app.app_context(), 'base.html')
 
 @bp.route('/<string:chat_id>')
@@ -42,6 +45,6 @@ def do_prompt() -> Generator[str, None, None] | str:
         history = data['history']
     except KeyError:
         return {"error": "Invalid request"}, 400
-    response = ollama.generate_response(model, prompt, history, current_app.app_context())
-    
+    db_gen = ""
+    response = ollama.generate_response(model, prompt, history, current_app.app_context(), putMessageInDB)
     return response, {"Content-Type": "text/plain"}

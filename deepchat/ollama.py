@@ -29,7 +29,7 @@ def prepare_messages(prompt: str, history: list[str, bool]) -> str:
     msgs.append({"content": prompt, "role": "user"})
     return msgs
 
-def generate_response(model, prompt, history, appctx) -> Generator[str, None, None]:
+def generate_response(model, prompt, history, appctx, callback) -> Generator[str, None, None]:
     session = requests.Session()
     data = {"model": model, "messages": prepare_messages(prompt, history)}
     print("Starting generation with data: " + str(data))
@@ -42,7 +42,8 @@ def generate_response(model, prompt, history, appctx) -> Generator[str, None, No
             if (data.get('error') != None):
                 yield f"Error: {data['error']}"
             elif data['done'] == True:
+                callback(data.get('message').get('content'));
                 yield f"<<~{data['done_reason']}~>>"
             else:
-            #    yield data['response']
+                callback(data.get('message').get('content')) 
                 yield data.get('message').get('content')
