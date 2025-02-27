@@ -26,7 +26,9 @@ async function handleMessageSubmission() {
     addMessage(userInput.trim());
     document.getElementById("user-input").value = '';
 
-    const response = await fetch("/request", {
+    chat_id = window.location.href.split("/")[-1]
+
+    const response = await fetch(`/request/${chat_id}`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({prompt: userInput.trim(), model: model, history: history.slice(0, -1)})
@@ -65,11 +67,11 @@ async function handleMessageSubmission() {
 }
 
 // Add event listener for the send button
-document.getElementById("send-btn").addEventListener("click", handleMessageSubmission);
+/*document.getElementById("send-btn").addEventListener("click", handleMessageSubmission);
 
 // Add event listener for the "Enter" key to submit the message
 document.getElementById("user-input").addEventListener("keypress", (e) => {
     if (e.key === 'Enter') {
         handleMessageSubmission();
     }
-});
+});*/

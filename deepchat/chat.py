@@ -33,10 +33,10 @@ def chat(chat_id: str) -> str:
         msgs += Markup("</p>")
         msgs += Markup("</div>")
 
-    return template(current_app.app_context(), 'base.html', chat_box=msgs)
+    return template(current_app.app_context(), 'base.html', chat_box=msgs, chat_id=chat_id)
 
-@bp.route('/request', methods=('POST',))
-def do_prompt() -> Generator[str, None, None] | str:
+@bp.route('/request/<string:chat_id>', methods=('POST',))
+def do_prompt(chat_id: str) -> Generator[str, None, None] | str:
     data = request.get_json()
     print(f"Got prompt request with data {data}")
     try:
@@ -46,5 +46,5 @@ def do_prompt() -> Generator[str, None, None] | str:
     except KeyError:
         return {"error": "Invalid request"}, 400
     db_gen = ""
-    response = ollama.generate_response(model, prompt, history, current_app.app_context(), putMessageInDB)
+    response = ollama.generate_response(model, prompt, history, current_app.app_context(), chat_id)
     return response, {"Content-Type": "text/plain"}

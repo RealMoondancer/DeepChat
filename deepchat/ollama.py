@@ -2,6 +2,7 @@ import requests
 from flask import current_app
 import json
 from collections.abc import Generator
+from . import db
 
 def build_target(api) -> str:
     with current_app.app_context():
@@ -29,21 +30,22 @@ def prepare_messages(prompt: str, history: list[str, bool]) -> str:
     msgs.append({"content": prompt, "role": "user"})
     return msgs
 
-def generate_response(model, prompt, history, appctx, callback) -> Generator[str, None, None]:
+def generate_response(model, prompt, history, appctx, chat_id) -> Generator[str, None, None]:
     session = requests.Session()
     data = {"model": model, "messages": prepare_messages(prompt, history)}
     print("Starting generation with data: " + str(data))
     with appctx:
         url = build_target("api/chat")
     with session.post(url, json=data, stream=True) as request:
+        full_msg = ""
         for chunk in request.iter_lines():
             data = json.loads(chunk)
             print(data)
             if (data.get('error') != None):
                 yield f"Error: {data['error']}"
             elif data['done'] == True:
-                callback(data.get('message').get('content'));
+                db.putMessageInDB(full_msg, chat_id)
                 yield f"<<~{data['done_reason']}~>>"
             else:
-                callback(data.get('message').get('content')) 
+                full_msg += data.get('message').get('content')
                 yield data.get('message').get('content')

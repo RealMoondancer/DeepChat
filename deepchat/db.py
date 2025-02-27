@@ -52,5 +52,6 @@ def get_messages(chat_id) -> tuple[str, bool]:
     messages = cur.fetchall()
     return messages
 
-async def putMessageInDB(msg):
-    print(msg)
+def putMessageInDB(msg, chat_id):
+    print(f"{msg=}")
+    print(f"{chat_id=}")
