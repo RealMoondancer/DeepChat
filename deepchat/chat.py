@@ -2,7 +2,7 @@ from collections.abc import Generator
 import functools
 
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app, Response
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -35,8 +35,23 @@ def chat(chat_id: str) -> str:
 
     return template(current_app.app_context(), 'base.html', chat_box=msgs, chat_id=chat_id)
 
-@bp.route('/request/<string:chat_id>', methods=('POST',))
+@bp.route('/request_v2/<string:chat_id>', methods=('POST',))
 def do_prompt(chat_id: str) -> Generator[str, None, None] | str:
+    #data = request.get_json()
+    #print(f"Got prompt request with data {data}")
+    try:
+        model = request.form.get('model')
+        prompt = request.form.get('user_input')
+        history = []#data['history']
+    except KeyError:
+        return {"error": "Invalid request"}, 400
+    db_gen = ""
+    response = ollama.generate_response(model, prompt, history, current_app.app_context(), chat_id)
+    return Response(response, content_type='text/event-stream')
+
+
+@bp.route('/request_v1/<string:chat_id>', methods=('POST',))
+def do_old_prompt(chat_id: str) -> Generator[str, None, None] | str:
     data = request.get_json()
     print(f"Got prompt request with data {data}")
     try:

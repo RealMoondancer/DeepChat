@@ -42,10 +42,9 @@ def generate_response(model, prompt, history, appctx, chat_id) -> Generator[str,
             data = json.loads(chunk)
             print(data)
             if (data.get('error') != None):
-                yield f"Error: {data['error']}"
+                yield f"data: Error: {data['error']}"
             elif data['done'] == True:
                 db.putMessageInDB(full_msg, chat_id)
-                yield f"<<~{data['done_reason']}~>>"
             else:
                 full_msg += data.get('message').get('content')
-                yield data.get('message').get('content')
+                yield f"data: {data.get('message').get('content')}"
